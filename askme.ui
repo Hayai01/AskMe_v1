@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="Resources.qrc">
-    <normaloff>:/Recursos/Principal1.jpeg</normaloff>:/Recursos/Principal1.jpeg</iconset>
+    <normaloff>:/Recursos/Logo AskMe.png</normaloff>:/Recursos/Logo AskMe.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(179, 255, 242);

@@ -50,14 +50,24 @@ void PreguntaForm::mostrarConceptos()
 
 void PreguntaForm::on_buttonBox_accepted()
 {
-    // Responde la pregunta actual
-    QString respuesta = ui->cmbTerminos->currentText();
-    if (!respuesta.isEmpty()) {
-        m_pregunta->responder(respuesta);
-        mostrarConceptos();
-    } else {
-        qDebug() << "Error: Respuesta vacía.";
+
+    if(m_cuestionario->hayMasPreguntas())
+    {
+        QString respuesta = ui->cmbTerminos->currentText();
+        if (!respuesta.isEmpty()) {
+            m_pregunta->responder(respuesta);
+            mostrarConceptos();
+        } else {
+
+
+        }
     }
+    else
+    {
+        emit preguntasContestadas(m_cuestionario);
+        this->parentWidget()->close();
+    }
+
 }
 
 void PreguntaForm::siguienteConcepto()
@@ -86,10 +96,8 @@ void PreguntaForm::setTemaAsomado(const QString &tema)
 
 void PreguntaForm::on_buttonBox_rejected()
 {
-    qDebug() << "Antes de emitir la señal preguntasContestadas.";
     emit preguntasContestadas(m_cuestionario);
-    // m_cuestionario->finalizar();
     this->parentWidget()->close();
-    qDebug() << "Señal preguntasContestadas emitida.";
+
 }
 

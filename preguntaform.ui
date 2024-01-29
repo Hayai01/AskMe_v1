@@ -28,7 +28,7 @@
     <widget class="QLabel" name="lblTema">
      <property name="styleSheet">
       <string notr="true">font: 900 italic 9pt &quot;Segoe UI&quot;;
-color: rgb(153, 0, 0);</string>
+color: rgb(0, 0, 0);</string>
      </property>
      <property name="text">
       <string>Desconocido</string>
@@ -74,7 +74,7 @@ color: rgb(153, 0, 0);</string>
     <widget class="QLabel" name="lblContador">
      <property name="styleSheet">
       <string notr="true">font: 700 italic 9pt &quot;Segoe UI&quot;;
-color: rgb(148, 0, 0);</string>
+color: rgb(0, 0, 0);</string>
      </property>
      <property name="text">
       <string>0/0</string>

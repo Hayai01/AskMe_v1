@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>Recursos/icono.ico</file>
         <file>Recursos/logo.png</file>
-        <file>Recursos/Principal1.jpeg</file>
+        <file>Recursos/Logo AskMe.png</file>
     </qresource>
 </RCC>

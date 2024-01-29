@@ -1,29 +1,19 @@
 #include "listaform.h"
 #include "ui_listaform.h"
 
+#include "listaform.h"
+#include "ui_listaform.h"
+
 listaForm::listaForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::listaForm),
     m_asignaturas(nullptr)
 {
     ui->setupUi(this);
-
-    // Configurar la tabla de temas
-    ui->tblTemas->setColumnCount(1);
-    QStringList tituloTemas;
-    tituloTemas << "Tema";
-    ui->tblTemas->setHorizontalHeaderLabels(tituloTemas);
-
-    // Configurar la tabla de terminos
-    ui->tblTerminos->setColumnCount(1);
-    QStringList tituloTerminos;
-    tituloTerminos << "Termino";
-    ui->tblTerminos->setHorizontalHeaderLabels(tituloTerminos);
-
     // Conectar señal de cambio en la asignatura
     connect(ui->cmbAsignaturas, SIGNAL(currentIndexChanged(int)), this, SLOT(cargarTemas()));
-    // Conectar señal de clic en la tabla de temas
-    connect(ui->tblTemas, SIGNAL(cellClicked(int, int)), this, SLOT(cargarTerminos(int, int)));
+    // Conectar señal de cambio en el tema
+    connect(ui->cmbTemas, SIGNAL(currentIndexChanged(int)), this, SLOT(cargarTerminos()));
 
     cargarAsignaturas();
 }
@@ -49,12 +39,15 @@ void listaForm::cargarAsignaturas()
             ui->cmbAsignaturas->addItem(a->nombre());
         }
     }
+
+    // Cargar los temas cuando se selecciona una asignatura inicialmente
+    cargarTemas();
 }
 
 void listaForm::cargarTemas()
 {
-    ui->tblTemas->clearContents();
-    ui->tblTemas->setRowCount(0);
+    ui->cmbTemas->clear();
+    ui->txtApuntes->clear(); // Limpiar el contenido actual
 
     QString nombreAsignatura = ui->cmbAsignaturas->currentText();
 
@@ -74,69 +67,58 @@ void listaForm::cargarTemas()
         {
             QList<Tema *> temas = asignaturaSeleccionada->temas();
 
-            int fila = 0;
             foreach (Tema *t, temas)
             {
-                // Insertar fila en la tabla de temas
-                ui->tblTemas->insertRow(fila);
-                ui->tblTemas->setItem(fila, 0, new QTableWidgetItem(t->nombre()));
-                fila++;
+                ui->cmbTemas->addItem(t->nombre());
             }
         }
     }
 
-    // Limpiar y reiniciar la tabla de términos
-    ui->tblTerminos->clearContents();
-    ui->tblTerminos->setRowCount(0);
+    qDebug() << "Temas cargados correctamente.";
+
 }
 
-void listaForm::cargarTerminos(int fila, int columna)
+
+
+void listaForm::cargarTerminos()
 {
-    ui->tblTerminos->clearContents();
-    ui->tblTerminos->setRowCount(0);
+    ui->txtApuntes->clear(); // Limpiar el contenido actual
 
-    if (fila >= 0)
+    QString nombreAsignatura = ui->cmbAsignaturas->currentText();
+    QString nombreTema = ui->cmbTemas->currentText();
+
+    if (m_asignaturas)
     {
-        QString nombreAsignatura = ui->cmbAsignaturas->currentText();
-        QString nombreTema = ui->tblTemas->item(fila, columna)->text();
-
-        if (m_asignaturas)
+        Asignatura *asignaturaSeleccionada = nullptr;
+        foreach (Asignatura *a, *m_asignaturas)
         {
-            Asignatura *asignaturaSeleccionada = nullptr;
-            foreach (Asignatura *a, *m_asignaturas)
+            if (a->nombre() == nombreAsignatura)
             {
-                if (a->nombre() == nombreAsignatura)
+                asignaturaSeleccionada = a;
+                break;
+            }
+        }
+
+        qDebug() << "Apunte:" << asignaturaSeleccionada;
+
+        if (asignaturaSeleccionada)
+        {
+            QList<Tema *> temas = asignaturaSeleccionada->temas();
+            foreach (Tema *t, temas)
+            {
+                if (t->nombre() == nombreTema)
                 {
-                    asignaturaSeleccionada = a;
+                    // Mostrar términos asociados al tema seleccionado
+                    QList<Apunte *> apuntes = t->apuntes();
+                    foreach (Apunte *ap, apuntes)
+                    {
+                        qDebug() << "Apunte:" << ap->toString();
+                        ui->txtApuntes->append(ap->toString());
+                        ui->txtApuntes->append("--------------------"); // Línea separadora
+                    }
                     break;
                 }
             }
-
-            if (asignaturaSeleccionada)
-            {
-                QList<Tema *> temas = asignaturaSeleccionada->temas();
-                foreach (Tema *t, temas)
-                {
-                    if (t->nombre() == nombreTema)
-                    {
-                        // Mostrar términos asociados al tema seleccionado
-                        QList<Apunte *> apuntes = t->apuntes();
-                        int filaTerminos = 0;
-                        foreach (Apunte *ap, apuntes)
-                        {
-                            ui->tblTerminos->insertRow(filaTerminos);
-                            ui->tblTerminos->setItem(filaTerminos, 0, new QTableWidgetItem(ap->termino()));
-                            filaTerminos++;
-                        }
-                        break;
-                    }
-                }
-            }
         }
     }
-}
-
-void listaForm::on_tblTemas_cellClicked(int row, int column)
-{
-    cargarTerminos(row, column);
 }

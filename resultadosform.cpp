@@ -50,7 +50,7 @@ void ResultadosForm::cargarDatos()
     {
         QTableWidgetItem *terminoItem = new QTableWidgetItem(preguntas[i]->apunte()->termino());
         QTableWidgetItem *conceptoItem = new QTableWidgetItem(preguntas[i]->apunte()->concepto());
-        QTableWidgetItem *correctoItem = new QTableWidgetItem(preguntas[i]->correcto() ? "😁" : "😞");
+        QTableWidgetItem *correctoItem = new QTableWidgetItem(preguntas[i]->correcto() ? "✅" : "❌");
 
 
         ui->tblResultados->setItem(i, 0, terminoItem);
